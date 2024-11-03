@@ -3,6 +3,10 @@ import Login from "./Login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Singup from "./Singup";
 import Home from "./Home";
+import NuevoPedido from "./userViews/nuevoPedido";
+import VerNuevoPedido from "./userViews/verNuevoPedido";
+import VerPedidos from "./userViews/verPedidos";
+import EditarUsuario from "./userViews/editarUsuario";
 
 function App() {
   return (
@@ -12,6 +16,10 @@ function App() {
           <Route path="/" element={<Login />}></Route>
           <Route path="/singup" element={<Singup />}></Route>
           <Route path="/home" element={<Home />}></Route>
+          <Route path="/nuevoPedido" element={<NuevoPedido />}></Route>
+          <Route path="/verNuevoPedido" element={<VerNuevoPedido />}></Route>
+          <Route path="/verPedidos" element={<VerPedidos />}></Route>
+          <Route path="/editarUsuario/:id" element={<EditarUsuario />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

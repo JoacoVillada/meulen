@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-// import Singup from "./Singup";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Validation from "./validations/LoginValidation";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function Login() {
   const navigate = useNavigate();
@@ -12,27 +12,47 @@ function Login() {
     password: "",
   });
 
+  axios.defaults.withCredentials = true;
+
   const [errors, setErrors] = useState({});
+
+  // Obtener la función para establecer el userId
+
+  // Verificar si el usuario ya está autenticado
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001")
+      .then((res) => {
+        if (res.data === "Success") {
+          navigate("/home");
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [navigate]);
 
   const handleInput = (event) => {
     setValues((prev) => ({
       ...prev,
-      [event.target.name]: [event.target.value],
+      [event.target.name]: event.target.value, // Cambiar de [event.target.value] a event.target.value
     }));
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const err = Validation(values);
+
     setErrors(err);
     if (err.email === "" && err.password === "") {
       console.log("Enviando datos:", values);
       axios
         .post("http://localhost:3001/login", values)
         .then((res) => {
-          if (res.data === "Success") {
+          if (res.data.message === "Success") {
+            const userId = res.data.userId; // ID DEL USUARIO
+            Cookies.set("userId", userId); // Guardar el userId en las cookies
             navigate("/home");
           } else {
-            alert("No recod existed");
+            alert("No record existed");
           }
         })
         .catch((err) => console.log(err));
@@ -54,7 +74,7 @@ function Login() {
               name="email"
               onChange={handleInput}
               className="form-control rounded 0"
-            ></input>
+            />
             {errors.email && (
               <span className="text-danger">{errors.email}</span>
             )}
@@ -69,7 +89,7 @@ function Login() {
               name="password"
               onChange={handleInput}
               className="form-control rounded 0"
-            ></input>
+            />
             {errors.password && (
               <span className="text-danger">{errors.password}</span>
             )}
